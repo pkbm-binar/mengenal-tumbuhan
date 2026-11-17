@@ -1,0 +1,1815 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Sains: Mengenal Tumbuhan - IPAS Kelas 4 SD</title>
+
+    <!-- Google Fonts: Fredoka (judul ramah anak) & Nunito (teks bacaan jelas & bulat) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome CDN untuk ikon tumbuhan, alam, dan navigasi -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Konfigurasi Tema & Font Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        judul: ['"Fredoka"', 'cursive', 'sans-serif'],
+                        teks: ['"Nunito"', 'sans-serif'],
+                    },
+                    colors: {
+                        krem: '#FFFDF5',
+                        daun: {
+                            muda: '#DCFCE7',
+                            cerah: '#22C55E',
+                            tua: '#15803D',
+                        },
+                        matahari: {
+                            muda: '#FEF9C3',
+                            cerah: '#FACC15',
+                            tua: '#CA8A04',
+                        },
+                        langit: {
+                            muda: '#E0F2FE',
+                            cerah: '#38BDF8',
+                            tua: '#0284C7',
+                        },
+                        tanah: {
+                            muda: '#FEF3C7',
+                            cerah: '#B45309',
+                            tua: '#78350F',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS untuk Animasi Ramah Anak, Efek Tombol 3D, & Mode Cetak Sertifikat -->
+    <style>
+        /* Pengaturan dasar ukuran font besar agar mudah dibaca siswa SD (18px+) */
+        body {
+            font-family: 'Nunito', sans-serif;
+            font-size: 18px;
+            background-color: #FFFDF5;
+            background-image: radial-gradient(#DCFCE7 2px, transparent 2px);
+            background-size: 32px 32px;
+            color: #1E293B;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, .font-judul {
+            font-family: 'Fredoka', cursive, sans-serif;
+        }
+
+        /* Animasi Melayang (Float) untuk awan, matahari, dan dekorasi */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .anim-float {
+            animation: float 3.2s ease-in-out infinite;
+        }
+
+        /* Animasi Membal Lembut (Bounce Gentle) untuk ikon & tombol ajakan */
+        @keyframes bounce-gentle {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+        .anim-bounce {
+            animation: bounce-gentle 2s ease-in-out infinite;
+        }
+
+        /* Animasi Bergoyang (Wiggle) saat bagian tumbuhan disentuh/diklik */
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg) scale(1); }
+            25% { transform: rotate(-4deg) scale(1.04); }
+            75% { transform: rotate(4deg) scale(1.04); }
+        }
+        .anim-wiggle:hover, .wiggle-active {
+            animation: wiggle 0.5s ease-in-out;
+        }
+
+        /* Animasi Muncul Pop-In untuk kartu konten */
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.95) translateY(10px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .tab-panel {
+            animation: popIn 0.35s ease-out forwards;
+        }
+
+        /* Efek tombol tebal ala permainan edukasi anak (3D tactile button) */
+        .btn-anak {
+            transition: all 0.15s ease;
+            box-shadow: 0 5px 0 rgba(0, 0, 0, 0.15);
+        }
+        .btn-anak:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
+        }
+
+        /* Gaya interaktif bagian SVG tumbuhan */
+        .plant-part {
+            cursor: pointer;
+            transition: filter 0.2s ease, transform 0.2s ease;
+            transform-origin: center;
+        }
+        .plant-part:hover {
+            filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.9));
+        }
+        .plant-part-selected {
+            filter: drop-shadow(0 0 12px rgba(34, 197, 94, 0.95));
+        }
+
+        /* Gaya khusus Drag and Drop */
+        .dnd-card {
+            cursor: grab;
+            user-select: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .dnd-card:active {
+            cursor: grabbing;
+        }
+        .dnd-dropzone {
+            transition: all 0.25s ease;
+        }
+        .dnd-dropzone.drag-over {
+            background-color: #FEF9C3;
+            border-color: #EAB308;
+            transform: scale(1.02);
+        }
+        .dnd-hint-pulse {
+            animation: pulseGlow 1s infinite alternate;
+        }
+        @keyframes pulseGlow {
+            from { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); }
+            to { box-shadow: 0 0 0 12px rgba(234, 179, 8, 0); }
+        }
+
+        /* Pengaturan Cetak (Print) agar Sertifikat tercetak rapi */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #area-sertifikat, #area-sertifikat * {
+                visibility: visible;
+            }
+            #area-sertifikat {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 20px;
+                box-shadow: none !important;
+                border: 8px double #15803D !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- ===================================================================== -->
+    <!-- HEADER & NAVIGASI UTAMA (SPA 5 MENU RAMAH ANAK)                       -->
+    <!-- ===================================================================== -->
+    <header class="bg-gradient-to-r from-daun-tua via-daun-cerah to-emerald-500 text-white shadow-lg sticky top-0 z-40 border-b-4 border-emerald-800 no-print">
+        <div class="max-w-6xl mx-auto px-4 py-3">
+            <!-- Baris Atas: Logo Judul & Tombol Suara -->
+            <div class="flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-matahari-cerah text-daun-tua rounded-2xl flex items-center justify-center text-2xl shadow-md anim-float border-2 border-white">
+                        <i class="fa-solid fa-seedling"></i>
+                    </div>
+                    <div>
+                        <span class="inline-block bg-white/20 text-xs sm:text-sm font-bold px-3 py-0.5 rounded-full tracking-wide">
+                            IPAS SD Kelas 4 • Fase B
+                        </span>
+                        <h1 class="text-xl sm:text-2xl md:text-3xl font-bold leading-tight drop-shadow">
+                            Mengenal Tumbuhan
+                        </h1>
+                    </div>
+                </div>
+
+                <!-- Tombol Kontrol Efek Suara (Mute/Unmute) -->
+                <button id="btn-toggle-sound" onclick="toggleSound()" aria-label="Atur Suara"
+                    class="btn-anak bg-matahari-cerah hover:bg-yellow-300 text-slate-900 font-bold px-4 py-2.5 rounded-2xl border-2 border-white flex items-center gap-2 text-base">
+                    <i id="icon-sound" class="fa-solid fa-volume-high text-lg text-daun-tua"></i>
+                    <span id="label-sound" class="hidden sm:inline">Suara: Hidup</span>
+                </button>
+            </div>
+
+            <!-- Baris Bawah: 5 Menu Navigasi Tab Single Page Application -->
+            <nav aria-label="Menu Utama" class="mt-3 grid grid-cols-2 sm:grid-cols-5 gap-2">
+                <button onclick="switchTab('home')" id="nav-home"
+                    class="nav-btn btn-anak flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl font-judul font-semibold text-base sm:text-lg bg-matahari-cerah text-slate-900 border-2 border-white">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Home</span>
+                </button>
+
+                <button onclick="switchTab('tujuan')" id="nav-tujuan"
+                    class="nav-btn btn-anak flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl font-judul font-semibold text-base sm:text-lg bg-white/90 hover:bg-white text-daun-tua border-2 border-transparent">
+                    <i class="fa-solid fa-bullseye"></i>
+                    <span>Tujuan</span>
+                </button>
+
+                <button onclick="switchTab('kuis')" id="nav-kuis"
+                    class="nav-btn btn-anak flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl font-judul font-semibold text-base sm:text-lg bg-white/90 hover:bg-white text-daun-tua border-2 border-transparent">
+                    <i class="fa-solid fa-circle-question"></i>
+                    <span>Kuis Seru</span>
+                </button>
+
+                <button onclick="switchTab('dnd')" id="nav-dnd"
+                    class="nav-btn btn-anak flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl font-judul font-semibold text-base sm:text-lg bg-white/90 hover:bg-white text-daun-tua border-2 border-transparent">
+                    <i class="fa-solid fa-puzzle-piece"></i>
+                    <span>Drag & Drop</span>
+                </button>
+
+                <button onclick="switchTab('tentang')" id="nav-tentang"
+                    class="nav-btn btn-anak col-span-2 sm:col-span-1 flex items-center justify-center gap-2 py-2.5 px-3 rounded-2xl font-judul font-semibold text-base sm:text-lg bg-white/90 hover:bg-white text-daun-tua border-2 border-transparent">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>Tentang</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ===================================================================== -->
+    <!-- AREA KONTEN UTAMA (BERUBAH DINAMIS TANPA RELOAD HALAMAN)              -->
+    <!-- ===================================================================== -->
+    <main class="flex-grow max-w-6xl w-full mx-auto px-4 py-6 sm:py-8">
+
+        <!-- ================================================================= -->
+        <!-- 1. TAB HOME (BERANDA & EKSPLORASI TUMBUHAN INTERAKTIF)            -->
+        <!-- ================================================================= -->
+        <section id="tab-home" class="tab-panel space-y-8">
+            <!-- Kartu Sambutan Ceria -->
+            <div class="bg-gradient-to-br from-langit-muda via-white to-daun-muda rounded-3xl p-6 sm:p-8 border-4 border-langit-cerah shadow-md relative overflow-hidden">
+                <!-- Dekorasi Awan & Matahari Melayang -->
+                <div class="hidden md:block absolute top-4 right-6 text-matahari-cerah text-6xl anim-float opacity-90">
+                    <i class="fa-solid fa-sun"></i>
+                </div>
+                <div class="max-w-3xl relative z-10">
+                    <span class="inline-flex items-center gap-2 bg-daun-cerah text-white font-bold px-4 py-1.5 rounded-full text-base mb-3 shadow-sm">
+                        <i class="fa-solid fa-sparkles"></i> Halo, Sahabat Sains Kelas 4!
+                    </span>
+                    <h2 class="text-2xl sm:text-4xl font-bold text-slate-800 mb-3 leading-snug">
+                        Ayo Jelajahi Rahasia Kehidupan Tumbuhan di Sekitar Kita!
+                    </h2>
+                    <p class="text-lg sm:text-xl text-slate-700 leading-relaxed mb-6">
+                        Tumbuhan adalah sahabat bumi yang memberi kita udara segar dan makanan. Yuk, klik bagian-bagian tubuh tumbuhan di bawah ini untuk mengenal tugas hebat mereka!
+                    </p>
+                    <div class="flex flex-wrap gap-3">
+                        <button onclick="switchTab('kuis')" class="btn-anak bg-daun-cerah hover:bg-daun-tua text-white font-judul font-bold text-lg px-6 py-3.5 rounded-2xl flex items-center gap-2 anim-bounce">
+                            <i class="fa-solid fa-play"></i> Mulai Kuis Interaktif
+                        </button>
+                        <button onclick="switchTab('dnd')" class="btn-anak bg-matahari-cerah hover:bg-yellow-400 text-slate-900 font-judul font-bold text-lg px-6 py-3.5 rounded-2xl flex items-center gap-2">
+                            <i class="fa-solid fa-gamepad"></i> Main Cocokkan Gambar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Eksplorasi Ilustrasi Kartun SVG Tumbuhan Interaktif -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border-4 border-daun-cerah shadow-md">
+                <div class="text-center mb-6">
+                    <h3 class="text-2xl sm:text-3xl font-bold text-daun-tua flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-hand-pointer text-amber-500"></i>
+                        Klik Bagian Tumbuhan Ceria Ini!
+                    </h3>
+                    <p class="text-slate-600 text-lg mt-1">
+                        Sentuh gambar <strong>Matahari, Bunga, Buah, Daun, Batang,</strong> atau <strong>Akar</strong> untuk melihat penjelasannya.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
+                    <!-- Kolom Kiri: Gambar Kartun SVG Edukatif -->
+                    <div class="lg:col-span-6 bg-gradient-to-b from-sky-100 via-sky-50 to-amber-100 rounded-3xl p-4 border-2 border-sky-200 flex flex-col items-center">
+                        <svg id="plant-svg" viewBox="0 0 420 460" class="w-full max-w-md h-auto select-none" role="img" aria-label="Ilustrasi Kartun Bagian Tumbuhan Interaktif">
+                            <!-- Langit & Awan -->
+                            <g class="anim-float">
+                                <ellipse cx="95" cy="55" rx="35" ry="18" fill="#FFFFFF" opacity="0.9"/>
+                                <ellipse cx="120" cy="50" rx="28" ry="20" fill="#FFFFFF" opacity="0.9"/>
+                                <ellipse cx="75" cy="60" rx="22" ry="14" fill="#FFFFFF" opacity="0.9"/>
+                            </g>
+
+                            <!-- 1. MATAHARI (Dapat Diklik) -->
+                            <g id="svg-part-matahari" class="plant-part" onclick="selectPlantPart('matahari')">
+                                <circle cx="345" cy="68" r="36" fill="#FACC15" stroke="#EAB308" stroke-width="4"/>
+                                <!-- Sinar Matahari -->
+                                <g stroke="#FACC15" stroke-width="5" stroke-linecap="round">
+                                    <line x1="345" y1="16" x2="345" y2="25"/>
+                                    <line x1="345" y1="111" x2="345" y2="120"/>
+                                    <line x1="293" y1="68" x2="302" y2="68"/>
+                                    <line x1="388" y1="68" x2="397" y2="68"/>
+                                    <line x1="308" y1="31" x2="315" y2="38"/>
+                                    <line x1="375" y1="98" x2="382" y2="105"/>
+                                    <line x1="308" y1="105" x2="315" y2="98"/>
+                                    <line x1="375" y1="38" x2="382" y2="31"/>
+                                </g>
+                                <!-- Wajah Matahari -->
+                                <circle cx="335" cy="63" r="3.5" fill="#78350F"/>
+                                <circle cx="355" cy="63" r="3.5" fill="#78350F"/>
+                                <path d="M 335 76 Q 345 86 355 76" stroke="#78350F" stroke-width="3" fill="none" stroke-linecap="round"/>
+                                <rect x="303" y="108" width="84" height="22" rx="11" fill="#FEF08A" stroke="#CA8A04" stroke-width="2"/>
+                                <text x="345" y="123" text-anchor="middle" font-family="Fredoka" font-size="12" font-weight="bold" fill="#854D0E">Matahari</text>
+                            </g>
+
+                            <!-- Lapisan Tanah & Rumput -->
+                            <rect x="10" y="325" width="400" height="125" rx="24" fill="#92400E"/>
+                            <rect x="10" y="325" width="400" height="22" rx="10" fill="#22C55E"/>
+                            <!-- Batu-batu kecil di dalam tanah -->
+                            <circle cx="70" cy="380" r="7" fill="#78350F"/>
+                            <circle cx="340" cy="405" r="9" fill="#78350F"/>
+                            <circle cx="110" cy="425" r="5" fill="#B45309"/>
+                            <circle cx="300" cy="365" r="6" fill="#B45309"/>
+
+                            <!-- 2. AKAR (Dapat Diklik) -->
+                            <g id="svg-part-akar" class="plant-part" onclick="selectPlantPart('akar')">
+                                <path d="M 210 325 C 210 360, 210 400, 210 435" stroke="#FDE68A" stroke-width="10" stroke-linecap="round" fill="none"/>
+                                <path d="M 210 345 C 180 360, 150 375, 130 405" stroke="#FDE68A" stroke-width="7" stroke-linecap="round" fill="none"/>
+                                <path d="M 210 355 C 245 365, 275 385, 295 415" stroke="#FDE68A" stroke-width="7" stroke-linecap="round" fill="none"/>
+                                <path d="M 210 380 C 185 395, 170 415, 160 435" stroke="#FCD34D" stroke-width="5" stroke-linecap="round" fill="none"/>
+                                <path d="M 210 385 C 235 400, 250 420, 260 438" stroke="#FCD34D" stroke-width="5" stroke-linecap="round" fill="none"/>
+                                <path d="M 165 368 C 150 372, 135 370, 120 378" stroke="#FCD34D" stroke-width="4" stroke-linecap="round" fill="none"/>
+                                <path d="M 255 375 C 272 375, 285 372, 302 380" stroke="#FCD34D" stroke-width="4" stroke-linecap="round" fill="none"/>
+                                <!-- Label Akar -->
+                                <rect x="35" y="392" width="76" height="26" rx="13" fill="#FEF3C7" stroke="#B45309" stroke-width="2"/>
+                                <text x="73" y="410" text-anchor="middle" font-family="Fredoka" font-size="14" font-weight="bold" fill="#78350F">Akar</text>
+                            </g>
+
+                            <!-- 3. BATANG (Dapat Diklik) -->
+                            <g id="svg-part-batang" class="plant-part" onclick="selectPlantPart('batang')">
+                                <rect x="200" y="130" width="20" height="198" rx="8" fill="#16A34A" stroke="#14532D" stroke-width="3"/>
+                                <!-- Cabang ke daun & buah -->
+                                <path d="M 205 245 Q 170 230 145 225" stroke="#16A34A" stroke-width="8" stroke-linecap="round" fill="none"/>
+                                <path d="M 215 215 Q 250 198 275 192" stroke="#16A34A" stroke-width="8" stroke-linecap="round" fill="none"/>
+                                <path d="M 215 268 Q 250 262 272 265" stroke="#16A34A" stroke-width="7" stroke-linecap="round" fill="none"/>
+                                <!-- Label Batang -->
+                                <rect x="165" y="282" width="90" height="26" rx="13" fill="#DCFCE7" stroke="#15803D" stroke-width="2"/>
+                                <text x="210" y="300" text-anchor="middle" font-family="Fredoka" font-size="14" font-weight="bold" fill="#14532D">Batang</text>
+                            </g>
+
+                            <!-- 4. DAUN (Dapat Diklik) -->
+                            <g id="svg-part-daun" class="plant-part" onclick="selectPlantPart('daun')">
+                                <!-- Daun Kiri -->
+                                <path d="M 150 225 C 95 195, 65 225, 85 255 C 105 275, 140 250, 150 225 Z" fill="#22C55E" stroke="#15803D" stroke-width="3"/>
+                                <path d="M 146 227 Q 115 235 92 246" stroke="#86EFAC" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                                <!-- Daun Kanan Atas -->
+                                <path d="M 270 192 C 325 162, 355 192, 335 222 C 315 242, 280 217, 270 192 Z" fill="#22C55E" stroke="#15803D" stroke-width="3"/>
+                                <path d="M 274 194 Q 305 202 328 213" stroke="#86EFAC" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                                <!-- Label Daun -->
+                                <rect x="55" y="182" width="76" height="26" rx="13" fill="#DCFCE7" stroke="#15803D" stroke-width="2"/>
+                                <text x="93" y="200" text-anchor="middle" font-family="Fredoka" font-size="14" font-weight="bold" fill="#14532D">Daun</text>
+                            </g>
+
+                            <!-- 5. BUAH (Dapat Diklik) -->
+                            <g id="svg-part-buah" class="plant-part" onclick="selectPlantPart('buah')">
+                                <!-- Buah Apel Merah Ceria -->
+                                <circle cx="285" cy="282" r="24" fill="#F97316" stroke="#C2410C" stroke-width="3"/>
+                                <circle cx="277" cy="274" r="5" fill="#FDBA74" opacity="0.8"/>
+                                <path d="M 285 258 Q 290 248 298 250" stroke="#15803D" stroke-width="3" fill="none" stroke-linecap="round"/>
+                                <!-- Label Buah -->
+                                <rect x="315" y="270" width="74" height="26" rx="13" fill="#FFEDD5" stroke="#C2410C" stroke-width="2"/>
+                                <text x="352" y="288" text-anchor="middle" font-family="Fredoka" font-size="14" font-weight="bold" fill="#9A3412">Buah</text>
+                            </g>
+
+                            <!-- 6. BUNGA (Dapat Diklik) -->
+                            <g id="svg-part-bunga" class="plant-part" onclick="selectPlantPart('bunga')">
+                                <!-- Kelopak Bunga Pink Cerah -->
+                                <circle cx="210" cy="68" r="22" fill="#FB7185" stroke="#E11D48" stroke-width="2.5"/>
+                                <circle cx="242" cy="88" r="22" fill="#FB7185" stroke="#E11D48" stroke-width="2.5"/>
+                                <circle cx="230" cy="124" r="22" fill="#FB7185" stroke="#E11D48" stroke-width="2.5"/>
+                                <circle cx="190" cy="124" r="22" fill="#FB7185" stroke="#E11D48" stroke-width="2.5"/>
+                                <circle cx="178" cy="88" r="22" fill="#FB7185" stroke="#E11D48" stroke-width="2.5"/>
+                                <!-- Wajah Ceria di Tengah Bunga -->
+                                <circle cx="210" cy="98" r="25" fill="#FACC15" stroke="#CA8A04" stroke-width="3"/>
+                                <circle cx="202" cy="93" r="3.5" fill="#1E293B"/>
+                                <circle cx="218" cy="93" r="3.5" fill="#1E293B"/>
+                                <circle cx="196" cy="101" r="3.5" fill="#F43F5E" opacity="0.6"/>
+                                <circle cx="224" cy="101" r="3.5" fill="#F43F5E" opacity="0.6"/>
+                                <path d="M 201 104 Q 210 114 219 104" stroke="#1E293B" stroke-width="3" fill="none" stroke-linecap="round"/>
+                                <!-- Label Bunga -->
+                                <rect x="105" y="55" width="78" height="26" rx="13" fill="#FFE4E6" stroke="#E11D48" stroke-width="2"/>
+                                <text x="144" y="73" text-anchor="middle" font-family="Fredoka" font-size="14" font-weight="bold" fill="#9F1239">Bunga</text>
+                            </g>
+                        </svg>
+
+                        <!-- Tombol Cepat Pilih Bagian (Memudahkan Akses) -->
+                        <div class="flex flex-wrap justify-center gap-2 mt-3">
+                            <button onclick="selectPlantPart('akar')" class="px-3 py-1.5 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-sm border border-amber-400">Akar</button>
+                            <button onclick="selectPlantPart('batang')" class="px-3 py-1.5 rounded-xl bg-green-100 hover:bg-green-200 text-green-900 font-bold text-sm border border-green-400">Batang</button>
+                            <button onclick="selectPlantPart('daun')" class="px-3 py-1.5 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-bold text-sm border border-emerald-400">Daun</button>
+                            <button onclick="selectPlantPart('bunga')" class="px-3 py-1.5 rounded-xl bg-rose-100 hover:bg-rose-200 text-rose-900 font-bold text-sm border border-rose-400">Bunga</button>
+                            <button onclick="selectPlantPart('buah')" class="px-3 py-1.5 rounded-xl bg-orange-100 hover:bg-orange-200 text-orange-900 font-bold text-sm border border-orange-400">Buah</button>
+                            <button onclick="selectPlantPart('matahari')" class="px-3 py-1.5 rounded-xl bg-yellow-100 hover:bg-yellow-200 text-yellow-900 font-bold text-sm border border-yellow-400">Matahari</button>
+                        </div>
+                    </div>
+
+                    <!-- Kolom Kanan: Kartu Penjelasan Detail Bagian yang Dipilih -->
+                    <div class="lg:col-span-6">
+                        <div id="plant-info-card" class="bg-daun-muda/70 rounded-3xl p-6 sm:p-8 border-4 border-daun-cerah shadow-inner transition-all">
+                            <div class="flex items-center gap-4 mb-4">
+                                <div id="plant-info-icon" class="w-16 h-16 rounded-2xl bg-daun-cerah text-white flex items-center justify-center text-3xl shadow-md">
+                                    <i class="fa-solid fa-leaf"></i>
+                                </div>
+                                <div>
+                                    <span class="text-sm font-extrabold uppercase tracking-wider text-daun-tua bg-white px-3 py-1 rounded-full">
+                                        Bagian Tumbuhan
+                                    </span>
+                                    <h4 id="plant-info-title" class="text-2xl sm:text-3xl font-bold text-slate-800 mt-1">
+                                        Daun (Dapur Tumbuhan)
+                                    </h4>
+                                </div>
+                            </div>
+
+                            <p id="plant-info-desc" class="text-lg sm:text-xl text-slate-800 leading-relaxed mb-5">
+                                Daun adalah tempat tumbuhan membuat makanannya sendiri melalui proses <strong>fotosintesis</strong>. Daun berwarna hijau karena mengandung zat hijau daun yang disebut <strong>klorofil</strong>.
+                            </p>
+
+                            <div class="bg-white rounded-2xl p-4 border-2 border-matahari-cerah">
+                                <p class="font-judul font-bold text-amber-700 text-lg flex items-center gap-2 mb-1">
+                                    <i class="fa-solid fa-lightbulb text-matahari-cerah text-xl"></i> Tahukah Kamu?
+                                </p>
+                                <p id="plant-info-fact" class="text-base sm:text-lg text-slate-700">
+                                    Di permukaan daun terdapat mulut daun kecil bernama <strong>stomata</strong> yang berfungsi sebagai tempat keluar masuknya udara!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ringkasan Materi Fotosintesis Sederhana -->
+            <div class="bg-gradient-to-r from-matahari-muda via-amber-50 to-daun-muda rounded-3xl p-6 sm:p-8 border-4 border-matahari-cerah shadow-md">
+                <h3 class="text-2xl sm:text-3xl font-bold text-slate-800 text-center mb-2">
+                    <i class="fa-solid fa-kitchen-set text-orange-500 mr-2"></i>
+                    Resep Rahasia Fotosintesis Tumbuhan
+                </h3>
+                <p class="text-center text-slate-700 text-lg mb-6">
+                    Tumbuhan memasak makanannya sendiri di daun dengan bantuan cahaya matahari:
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 items-center text-center">
+                    <div class="bg-white p-4 rounded-2xl border-2 border-yellow-400 shadow-sm">
+                        <div class="text-3xl text-yellow-500 mb-1"><i class="fa-solid fa-sun"></i></div>
+                        <div class="font-judul font-bold text-lg text-slate-800">Cahaya Matahari</div>
+                        <div class="text-sm text-slate-600">Sumber energi utama</div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-2xl border-2 border-sky-400 shadow-sm">
+                        <div class="text-3xl text-sky-500 mb-1"><i class="fa-solid fa-droplet"></i></div>
+                        <div class="font-judul font-bold text-lg text-slate-800">+ Air & Mineral</div>
+                        <div class="text-sm text-slate-600">Diserap oleh akar</div>
+                    </div>
+
+                    <div class="bg-white p-4 rounded-2xl border-2 border-slate-400 shadow-sm">
+                        <div class="text-3xl text-slate-500 mb-1"><i class="fa-solid fa-wind"></i></div>
+                        <div class="font-judul font-bold text-lg text-slate-800">+ Karbon Dioksida</div>
+                        <div class="text-sm text-slate-600">Diserap lewat stomata</div>
+                    </div>
+
+                    <div class="text-3xl font-bold text-daun-tua py-2">
+                        <i class="fa-solid fa-arrow-right hidden lg:inline"></i>
+                        <i class="fa-solid fa-arrow-down lg:hidden"></i>
+                        <div class="text-sm font-judul">Diproses Klorofil</div>
+                    </div>
+
+                    <div class="bg-daun-cerah text-white p-4 rounded-2xl border-2 border-daun-tua shadow-md">
+                        <div class="text-3xl mb-1"><i class="fa-solid fa-apple-whole"></i> + <i class="fa-solid fa-lungs"></i></div>
+                        <div class="font-judul font-bold text-lg">Karbohidrat & Oksigen</div>
+                        <div class="text-sm text-emerald-50">Makanan & udara segar!</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 2. TAB TUJUAN PEMBELAJARAN (IPAS KELAS 4 FASE B)                  -->
+        <!-- ================================================================= -->
+        <section id="tab-tujuan" class="tab-panel hidden space-y-8">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border-4 border-langit-cerah shadow-md">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b-2 border-slate-100 pb-5 mb-6">
+                    <div>
+                        <span class="inline-block bg-langit-muda text-langit-tua font-bold px-4 py-1 rounded-full text-base mb-2">
+                            Kurikulum Merdeka • IPAS Kelas 4 / Fase B
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-slate-800">
+                            Tujuan Pembelajaran Kita Hari Ini
+                        </h2>
+                    </div>
+                    <div class="bg-daun-muda text-daun-tua px-4 py-3 rounded-2xl font-bold text-base flex items-center gap-2">
+                        <i class="fa-solid fa-star text-matahari-cerah text-xl"></i>
+                        <span>Topik: Tumbuhan Sumber Kehidupan</span>
+                    </div>
+                </div>
+
+                <!-- 4 Kartu Tujuan Pembelajaran Ramah Anak -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- Poin 1 -->
+                    <div class="bg-emerald-50 rounded-3xl p-6 border-2 border-emerald-300 flex gap-4 items-start">
+                        <div class="w-14 h-14 rounded-2xl bg-daun-cerah text-white flex-shrink-0 flex items-center justify-center text-2xl font-judul font-bold shadow">
+                            1
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-daun-tua mb-1 flex items-center gap-2">
+                                <i class="fa-solid fa-seedling"></i> Mengenal Bagian Tumbuhan
+                            </h3>
+                            <p class="text-slate-700 text-lg leading-relaxed">
+                                Aku dapat menyebutkan bagian-bagian utama tubuh tumbuhan, yaitu <strong>akar, batang, daun, bunga,</strong> dan <strong>buah</strong>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Poin 2 -->
+                    <div class="bg-amber-50 rounded-3xl p-6 border-2 border-amber-300 flex gap-4 items-start">
+                        <div class="w-14 h-14 rounded-2xl bg-amber-500 text-white flex-shrink-0 flex items-center justify-center text-2xl font-judul font-bold shadow">
+                            2
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-amber-900 mb-1 flex items-center gap-2">
+                                <i class="fa-solid fa-gears"></i> Memahami Fungsi Setiap Bagian
+                            </h3>
+                            <p class="text-slate-700 text-lg leading-relaxed">
+                                Aku dapat menjelaskan tugas atau fungsi setiap bagian tumbuhan untuk menjaga tumbuhan tetap hidup dan tumbuh subur.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Poin 3 -->
+                    <div class="bg-sky-50 rounded-3xl p-6 border-2 border-sky-300 flex gap-4 items-start">
+                        <div class="w-14 h-14 rounded-2xl bg-sky-500 text-white flex-shrink-0 flex items-center justify-center text-2xl font-judul font-bold shadow">
+                            3
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-sky-900 mb-1 flex items-center gap-2">
+                                <i class="fa-solid fa-code-branch"></i> Membedakan Jenis Akar
+                            </h3>
+                            <p class="text-slate-700 text-lg leading-relaxed">
+                                Aku dapat membedakan <strong>akar tunggang</strong> (seperti pohon mangga) dan <strong>akar serabut</strong> (seperti pohon padi dan jagung).
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Poin 4 -->
+                    <div class="bg-rose-50 rounded-3xl p-6 border-2 border-rose-300 flex gap-4 items-start">
+                        <div class="w-14 h-14 rounded-2xl bg-rose-500 text-white flex-shrink-0 flex items-center justify-center text-2xl font-judul font-bold shadow">
+                            4
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-rose-900 mb-1 flex items-center gap-2">
+                                <i class="fa-solid fa-sun"></i> Menjelaskan Fotosintesis
+                            </h3>
+                            <p class="text-slate-700 text-lg leading-relaxed">
+                                Aku dapat menceritakan bagaimana tumbuhan membuat makanan sendiri (<strong>fotosintesis</strong>) serta manfaatnya bagi manusia dan hewan.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Checklist Kesiapan Belajar Interaktif -->
+                <div class="mt-8 bg-matahari-muda/70 rounded-3xl p-6 border-2 border-matahari-cerah">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+                        <h3 class="text-xl sm:text-2xl font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-clipboard-check text-daun-tua"></i>
+                            Ceklis Kesiapan Belajarku (Klik untuk Mencentang!)
+                        </h3>
+                        <span id="checklist-status" class="bg-white text-daun-tua font-bold px-4 py-1.5 rounded-full text-base border border-daun-cerah">
+                            0 / 4 Siap
+                        </span>
+                    </div>
+
+                    <div class="space-y-3" id="readiness-list">
+                        <label class="flex items-center gap-3 bg-white p-4 rounded-2xl border-2 border-transparent hover:border-daun-cerah cursor-pointer transition">
+                            <input type="checkbox" onchange="updateChecklist()" class="readiness-cb w-6 h-6 accent-green-600 rounded">
+                            <span class="text-lg font-semibold text-slate-800">Saya sudah mengamati bagian-bagian tumbuhan di halaman Home.</span>
+                        </label>
+                        <label class="flex items-center gap-3 bg-white p-4 rounded-2xl border-2 border-transparent hover:border-daun-cerah cursor-pointer transition">
+                            <input type="checkbox" onchange="updateChecklist()" class="readiness-cb w-6 h-6 accent-green-600 rounded">
+                            <span class="text-lg font-semibold text-slate-800">Saya tahu bahwa daun adalah tempat tumbuhan memasak makanan (fotosintesis).</span>
+                        </label>
+                        <label class="flex items-center gap-3 bg-white p-4 rounded-2xl border-2 border-transparent hover:border-daun-cerah cursor-pointer transition">
+                            <input type="checkbox" onchange="updateChecklist()" class="readiness-cb w-6 h-6 accent-green-600 rounded">
+                            <span class="text-lg font-semibold text-slate-800">Saya siap mengerjakan 10 soal Kuis Interaktif dengan jujur dan teliti.</span>
+                        </label>
+                        <label class="flex items-center gap-3 bg-white p-4 rounded-2xl border-2 border-transparent hover:border-daun-cerah cursor-pointer transition">
+                            <input type="checkbox" onchange="updateChecklist()" class="readiness-cb w-6 h-6 accent-green-600 rounded">
+                            <span class="text-lg font-semibold text-slate-800">Saya siap mencocokkan bagian tumbuhan dan fungsinya di permainan Drag & Drop.</span>
+                        </label>
+                    </div>
+
+                    <div id="checklist-banner" class="hidden mt-4 bg-daun-cerah text-white p-4 rounded-2xl font-bold text-lg flex flex-wrap items-center justify-between gap-3">
+                        <span><i class="fa-solid fa-trophy text-matahari-cerah mr-2"></i> Hebat! Kamu sudah 100% siap mengikuti evaluasi!</span>
+                        <button onclick="switchTab('kuis')" class="bg-matahari-cerah text-slate-900 px-5 py-2 rounded-xl font-judul hover:bg-yellow-300">
+                            Lanjut ke Kuis <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 3. TAB KUIS INTERAKTIF (10 SOAL + PEMBAHASAN + SERTIFIKAT)        -->
+        <!-- ================================================================= -->
+        <section id="tab-kuis" class="tab-panel hidden">
+            <!-- TAHAP 1: Form Input Nama Siswa & Kelas -->
+            <div id="quiz-start-screen" class="max-w-2xl mx-auto bg-white rounded-3xl p-6 sm:p-10 border-4 border-daun-cerah shadow-lg text-center">
+                <div class="w-20 h-20 bg-matahari-cerah text-daun-tua rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4 shadow-md anim-bounce">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">
+                    Kuis Pemahaman: Mengenal Tumbuhan
+                </h2>
+                <p class="text-lg text-slate-600 mb-6">
+                    Jawablah <strong>10 soal pilihan ganda</strong> berikut ini. Di akhir kuis, kamu akan mendapatkan <strong>Skor Nilai</strong> dan <strong>Sertifikat Bintang</strong>!
+                </p>
+
+                <!-- Pesan Peringatan Ramah Anak (Pengganti alert) -->
+                <div id="quiz-form-error" class="hidden mb-4 bg-rose-100 border-2 border-rose-400 text-rose-800 px-4 py-3 rounded-2xl font-bold text-base">
+                    <i class="fa-solid fa-circle-exclamation mr-2"></i> Yuk, tuliskan nama lengkapmu terlebih dahulu sebelum mulai!
+                </div>
+
+                <div class="space-y-4 text-left mb-6">
+                    <div>
+                        <label for="input-nama-siswa" class="block font-judul font-bold text-slate-700 text-lg mb-1">
+                            Nama Lengkap Siswa:
+                        </label>
+                        <input type="text" id="input-nama-siswa" placeholder="Contoh: Aisyah Putri"
+                            class="w-full px-4 py-3.5 rounded-2xl border-2 border-slate-300 focus:border-daun-cerah focus:outline-none text-lg font-bold text-slate-800 bg-slate-50">
+                    </div>
+
+                    <div>
+                        <label for="input-kelas-siswa" class="block font-judul font-bold text-slate-700 text-lg mb-1">
+                            Kelas:
+                        </label>
+                        <input type="text" id="input-kelas-siswa" value="4 (Empat)" placeholder="Contoh: 4A"
+                            class="w-full px-4 py-3.5 rounded-2xl border-2 border-slate-300 focus:border-daun-cerah focus:outline-none text-lg font-bold text-slate-800 bg-slate-50">
+                    </div>
+                </div>
+
+                <button onclick="startQuiz()" class="btn-anak w-full bg-daun-cerah hover:bg-daun-tua text-white font-judul font-bold text-xl py-4 px-6 rounded-2xl flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-rocket"></i> Mulai Mengerjakan Kuis!
+                </button>
+            </div>
+
+            <!-- TAHAP 2: Layar Pertanyaan Kuis -->
+            <div id="quiz-play-screen" class="hidden max-w-3xl mx-auto bg-white rounded-3xl p-6 sm:p-8 border-4 border-daun-cerah shadow-lg">
+                <!-- Baris Atas: Nomor Soal, Skor Sementara, & Progress Bar -->
+                <div class="mb-6">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                        <span id="quiz-progress-text" class="font-judul font-bold text-lg text-daun-tua bg-daun-muda px-4 py-1.5 rounded-full">
+                            Soal 1 dari 10
+                        </span>
+                        <span id="quiz-live-score" class="font-judul font-bold text-lg text-amber-800 bg-matahari-muda px-4 py-1.5 rounded-full">
+                            <i class="fa-solid fa-star text-amber-500 mr-1"></i> Skor: 0
+                        </span>
+                    </div>
+                    <div class="w-full bg-slate-200 h-4 rounded-full overflow-hidden p-0.5">
+                        <div id="quiz-progress-bar" class="bg-daun-cerah h-full rounded-full transition-all duration-300" style="width: 10%;"></div>
+                    </div>
+                </div>
+
+                <!-- Kotak Pertanyaan -->
+                <div class="bg-sky-50 rounded-2xl p-5 sm:p-6 border-2 border-sky-200 mb-6">
+                    <div class="flex items-start gap-3">
+                        <div id="quiz-question-icon" class="w-12 h-12 rounded-2xl bg-sky-500 text-white flex-shrink-0 flex items-center justify-center text-2xl">
+                            <i class="fa-solid fa-leaf"></i>
+                        </div>
+                        <h3 id="quiz-question-text" class="text-xl sm:text-2xl font-bold text-slate-800 leading-snug">
+                            Memuat pertanyaan...
+                        </h3>
+                    </div>
+                </div>
+
+                <!-- Pilihan Jawaban A, B, C, D -->
+                <div id="quiz-options-container" class="grid grid-cols-1 gap-3 mb-6">
+                    <!-- Tombol opsi jawaban dirender otomatis oleh JavaScript -->
+                </div>
+
+                <!-- Kotak Umpan Balik & Pembahasan Langsung -->
+                <div id="quiz-feedback-box" class="hidden rounded-2xl p-5 border-2 mb-6 transition-all">
+                    <div class="flex items-start gap-3">
+                        <div id="quiz-feedback-icon" class="text-3xl mt-0.5"></div>
+                        <div>
+                            <h4 id="quiz-feedback-title" class="font-judul font-bold text-xl mb-1"></h4>
+                            <p id="quiz-feedback-explanation" class="text-base sm:text-lg leading-relaxed"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tombol Soal Berikutnya -->
+                <div class="flex justify-end">
+                    <button id="btn-next-question" onclick="nextQuestion()" class="hidden btn-anak bg-daun-cerah hover:bg-daun-tua text-white font-judul font-bold text-lg px-7 py-3.5 rounded-2xl items-center gap-2">
+                        <span id="btn-next-label">Soal Berikutnya</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAHAP 3: Layar Hasil Akhir & Kartu Sertifikat -->
+            <div id="quiz-result-screen" class="hidden max-w-3xl mx-auto space-y-6">
+                <!-- Kartu Sertifikat yang Dapat Dicetak -->
+                <div id="area-sertifikat" class="bg-gradient-to-br from-amber-50 via-white to-emerald-50 rounded-3xl p-6 sm:p-10 border-8 border-double border-daun-tua shadow-xl text-center relative overflow-hidden">
+                    <!-- Ornamen Sudut -->
+                    <div class="text-daun-cerah text-4xl mb-2">
+                        <i class="fa-solid fa-award"></i>
+                    </div>
+                    <p class="uppercase tracking-widest font-bold text-daun-tua text-sm sm:text-base">
+                        Sertifikat Penghargaan Belajar IPAS
+                    </p>
+                    <h2 class="text-2xl sm:text-4xl font-bold text-slate-800 mt-1 mb-4">
+                        Sahabat Tumbuhan Hebat!
+                    </h2>
+
+                    <p class="text-lg text-slate-600">Diberikan dengan bangga kepada:</p>
+                    <div class="my-3 py-2 px-6 inline-block bg-matahari-muda/80 border-b-4 border-daun-cerah rounded-xl">
+                        <h3 id="cert-student-name" class="text-2xl sm:text-3xl font-bold text-daun-tua">
+                            Nama Siswa
+                        </h3>
+                        <p id="cert-student-class" class="text-base font-bold text-slate-700">
+                            Kelas 4
+                        </p>
+                    </div>
+
+                    <p class="text-base sm:text-lg text-slate-700 max-w-xl mx-auto mt-2">
+                        Telah menyelesaikan Evaluasi Pemahaman Materi <strong>"Mengenal Tumbuhan"</strong> (Kurikulum Merdeka IPAS Kelas 4 / Fase B) dengan perolehan nilai:
+                    </p>
+
+                    <!-- Nilai & Bintang Predikat -->
+                    <div class="my-6 flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <div class="bg-white px-8 py-4 rounded-3xl border-4 border-daun-cerah shadow-sm">
+                            <span class="block text-sm font-bold text-slate-500 uppercase">Skor Akhir</span>
+                            <span id="cert-score" class="text-4xl sm:text-5xl font-judul font-bold text-daun-tua">100</span>
+                        </div>
+                        <div class="bg-white px-6 py-4 rounded-3xl border-4 border-matahari-cerah shadow-sm">
+                            <div id="cert-stars" class="text-2xl sm:text-3xl text-amber-400 mb-1">
+                                ★★★★★
+                            </div>
+                            <span id="cert-predicate" class="font-judul font-bold text-lg text-slate-800">
+                                Luar Biasa! Sang Ahli Tumbuhan
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Footer Tanda Tangan Guru & Tanggal -->
+                    <div class="mt-6 pt-4 border-t-2 border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4 text-base text-slate-700 px-4">
+                        <div class="text-center sm:text-left">
+                            <p id="cert-school-name" class="font-bold text-slate-800">SD Negeri Nusantara</p>
+                            <p id="cert-date" class="text-sm text-slate-500">Tanggal Evaluasi</p>
+                        </div>
+                        <div class="text-center sm:text-right">
+                            <p class="text-sm text-slate-500">Guru Kelas 4,</p>
+                            <p id="cert-teacher-name" class="font-bold text-slate-800 mt-4 underline decoration-daun-cerah decoration-2">
+                                Bapak/Ibu Guru Kelas 4
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tombol Aksi Setelah Kuis (Tidak ikut tercetak) -->
+                <div class="flex flex-wrap justify-center gap-3 no-print">
+                    <button onclick="window.print()" class="btn-anak bg-langit-cerah hover:bg-langit-tua text-white font-judul font-bold text-lg px-6 py-3.5 rounded-2xl flex items-center gap-2">
+                        <i class="fa-solid fa-print"></i> Cetak / Simpan Sertifikat
+                    </button>
+                    <button onclick="resetQuiz()" class="btn-anak bg-matahari-cerah hover:bg-yellow-400 text-slate-900 font-judul font-bold text-lg px-6 py-3.5 rounded-2xl flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-right"></i> Ulangi Kuis
+                    </button>
+                    <button onclick="switchTab('dnd')" class="btn-anak bg-daun-cerah hover:bg-daun-tua text-white font-judul font-bold text-lg px-6 py-3.5 rounded-2xl flex items-center gap-2">
+                        <i class="fa-solid fa-puzzle-piece"></i> Main Drag & Drop
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 4. TAB DRAG AND DROP (MENCOCOKKAN BAGIAN & FUNGSI TUMBUHAN)       -->
+        <!-- ================================================================= -->
+        <section id="tab-dnd" class="tab-panel hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border-4 border-matahari-cerah shadow-md">
+                <!-- Header Permainan -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-5 border-b-2 border-slate-100">
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-bold text-slate-800 flex items-center gap-2">
+                            <i class="fa-solid fa-puzzle-piece text-amber-500"></i>
+                            Cocokkan Bagian Tumbuhan & Fungsinya!
+                        </h2>
+                        <p class="text-slate-600 text-lg mt-1">
+                            <strong>Cara Main:</strong> Tarik (<em>drag</em>) kartu bagian tumbuhan ke kotak fungsi yang tepat, atau <strong>klik kartu lalu klik kotak tujuannya</strong>!
+                        </p>
+                    </div>
+
+                    <!-- Skor & Tombol Petunjuk / Reset -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span id="dnd-score-badge" class="bg-daun-muda text-daun-tua font-judul font-bold text-lg px-4 py-2 rounded-2xl border-2 border-daun-cerah">
+                            Terpasang: 0 / 6
+                        </span>
+                        <button onclick="giveDndHint()" class="btn-anak bg-matahari-cerah hover:bg-yellow-400 text-slate-900 font-judul font-bold text-base px-4 py-2.5 rounded-2xl flex items-center gap-2">
+                            <i class="fa-solid fa-lightbulb"></i> Petunjuk
+                        </button>
+                        <button onclick="initDragAndDrop()" class="btn-anak bg-slate-200 hover:bg-slate-300 text-slate-800 font-judul font-bold text-base px-4 py-2.5 rounded-2xl flex items-center gap-2">
+                            <i class="fa-solid fa-shuffle"></i> Ulangi
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Banner Kemenangan Drag and Drop -->
+                <div id="dnd-win-banner" class="hidden my-6 bg-gradient-to-r from-daun-cerah to-emerald-500 text-white p-6 rounded-3xl border-4 border-matahari-cerah text-center shadow-lg">
+                    <div class="text-4xl mb-2 anim-bounce">🎉🌟🏆</div>
+                    <h3 class="text-2xl sm:text-3xl font-bold mb-1">Luar Biasa! Semua Bagian Cocok Sempurna!</h3>
+                    <p class="text-lg text-emerald-50 mb-4">Kamu sudah memahami fungsi setiap bagian tumbuhan dengan sangat baik.</p>
+                    <button onclick="initDragAndDrop()" class="btn-anak bg-matahari-cerah text-slate-900 font-judul font-bold text-lg px-6 py-2.5 rounded-2xl">
+                        <i class="fa-solid fa-rotate-right mr-1"></i> Main Lagi
+                    </button>
+                </div>
+
+                <!-- Area Kartu Bagian Tumbuhan (Sumber Drag / Klik) -->
+                <div class="my-6 bg-langit-muda/60 p-5 rounded-3xl border-2 border-langit-cerah">
+                    <h3 class="font-judul font-bold text-lg text-sky-900 mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-hand-holding-seedling"></i> 1. Pilih atau Tarik Kartu Bagian Tumbuhan:
+                    </h3>
+                    <div id="dnd-source-container" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                        <!-- Kartu dirender dinamis oleh JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Area Kotak Fungsi (Target Drop / Klik) -->
+                <div>
+                    <h3 class="font-judul font-bold text-lg text-daun-tua mb-3 flex items-center gap-2">
+                        <i class="fa-solid fa-box-open"></i> 2. Letakkan ke Kotak Fungsi yang Tepat:
+                    </h3>
+                    <div id="dnd-target-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Kotak target dirender dinamis oleh JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 5. TAB TENTANG (INFORMASI MEDIA, PANDUAN, & IDENTITAS GURU)       -->
+        <!-- ================================================================= -->
+        <section id="tab-tentang" class="tab-panel hidden space-y-6">
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border-4 border-daun-cerah shadow-md space-y-6">
+                <!-- Informasi Media Pembelajaran -->
+                <div class="border-b-2 border-slate-100 pb-6">
+                    <span class="inline-block bg-daun-muda text-daun-tua font-bold px-4 py-1 rounded-full text-base mb-2">
+                        Media Evaluasi Pembelajaran Digital
+                    </span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-3">
+                        Tentang Website "Mengenal Tumbuhan"
+                    </h2>
+                    <p class="text-lg text-slate-700 leading-relaxed">
+                        Website interaktif ini dirancang khusus untuk mendukung pembelajaran mata pelajaran <strong>Ilmu Pengetahuan Alam dan Sosial (IPAS) Kelas 4 Sekolah Dasar (Fase B)</strong> Kurikulum Merdeka pada topik <em>"Tumbuhan, Sumber Kehidupan di Bumi"</em>. Media ini memadukan eksplorasi visual, kuis berumpan balik langsung, serta permainan mencocokkan agar siswa belajar dengan gembira.
+                    </p>
+                </div>
+
+                <!-- Panduan Penggunaan untuk Siswa & Guru -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-sky-50 p-6 rounded-3xl border-2 border-sky-200">
+                        <h3 class="text-xl font-bold text-sky-900 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-child-reaching text-sky-600"></i> Panduan untuk Siswa
+                        </h3>
+                        <ul class="space-y-2.5 text-slate-700 text-lg">
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-check text-daun-cerah mt-1"></i>
+                                <span>Mulai dari tab <strong>Home</strong> untuk mengklik gambar bagian tumbuhan dan membaca fungsinya.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-check text-daun-cerah mt-1"></i>
+                                <span>Buka tab <strong>Tujuan</strong> dan centang kesiapan belajarmu.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-check text-daun-cerah mt-1"></i>
+                                <span>Kerjakan 10 soal di tab <strong>Kuis Seru</strong>, lalu cetak atau simpan sertifikat nilaimu!</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-check text-daun-cerah mt-1"></i>
+                                <span>Asah ketangkasanmu di permainan <strong>Drag & Drop</strong>.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="bg-amber-50 p-6 rounded-3xl border-2 border-amber-200">
+                        <h3 class="text-xl font-bold text-amber-900 mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-chalkboard-user text-amber-600"></i> Panduan untuk Guru
+                        </h3>
+                        <ul class="space-y-2.5 text-slate-700 text-lg">
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-check text-amber-600 mt-1"></i>
+                                <span>Dapat digunakan melalui proyektor kelas, laptop, tablet, maupun ponsel pintar siswa.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-check text-amber-600 mt-1"></i>
+                                <span>Gunakan formulir <strong>Identitas Guru & Sekolah</strong> di bawah agar nama Bapak/Ibu otomatis tercetak pada sertifikat siswa.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <i class="fa-solid fa-circle-check text-amber-600 mt-1"></i>
+                                <span>Tombol <strong>Suara</strong> di pojok kanan atas dapat dimatikan jika digunakan serentak di ruang kelas.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Kartu Identitas Guru & Sekolah (Dapat Disesuaikan dengan Mudah) -->
+                <div class="bg-daun-muda/70 rounded-3xl p-6 border-2 border-daun-cerah">
+                    <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                        <h3 class="text-xl sm:text-2xl font-bold text-daun-tua flex items-center gap-2">
+                            <i class="fa-solid fa-id-card"></i> Identitas Guru & Sekolah
+                        </h3>
+                        <button onclick="toggleEditTeacher()" id="btn-edit-teacher" class="btn-anak bg-white hover:bg-slate-50 text-daun-tua font-judul font-bold text-base px-4 py-2 rounded-2xl border-2 border-daun-cerah">
+                            <i class="fa-solid fa-pen-to-square mr-1"></i> Ubah Identitas
+                        </button>
+                    </div>
+
+                    <!-- Tampilan Informasi Guru -->
+                    <div id="teacher-display-box" class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white p-5 rounded-2xl border border-emerald-200 text-lg">
+                        <div>
+                            <span class="text-sm text-slate-500 block font-bold">Nama Guru Pengampu:</span>
+                            <strong id="display-teacher-name" class="text-slate-800 text-xl">Bapak/Ibu Guru Kelas 4</strong>
+                        </div>
+                        <div>
+                            <span class="text-sm text-slate-500 block font-bold">Nama Sekolah:</span>
+                            <strong id="display-school-name" class="text-slate-800 text-xl">SD Negeri Nusantara</strong>
+                        </div>
+                        <div>
+                            <span class="text-sm text-slate-500 block font-bold">Mata Pelajaran & Fase:</span>
+                            <strong class="text-slate-800">IPAS • Kelas 4 (Fase B)</strong>
+                        </div>
+                        <div>
+                            <span class="text-sm text-slate-500 block font-bold">Tahun Ajaran:</span>
+                            <strong id="display-academic-year" class="text-slate-800">2026 / 2027</strong>
+                        </div>
+                    </div>
+
+                    <!-- Form Edit Identitas Guru (Tersembunyi secara default) -->
+                    <div id="teacher-edit-form" class="hidden mt-4 bg-white p-5 rounded-2xl border-2 border-matahari-cerah space-y-4">
+                        <p class="text-base font-bold text-amber-800">
+                            <i class="fa-solid fa-info-circle mr-1"></i> Perubahan di bawah ini akan otomatis tampil di Sertifikat Hasil Belajar siswa:
+                        </p>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">Nama Guru:</label>
+                                <input type="text" id="input-teacher-name" value="Bapak/Ibu Guru Kelas 4"
+                                    class="w-full px-3 py-2.5 rounded-xl border-2 border-slate-300 font-bold text-slate-800">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">Nama Sekolah:</label>
+                                <input type="text" id="input-school-name" value="SD Negeri Nusantara"
+                                    class="w-full px-3 py-2.5 rounded-xl border-2 border-slate-300 font-bold text-slate-800">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-bold text-slate-700 mb-1">Tahun Ajaran:</label>
+                                <input type="text" id="input-academic-year" value="2026 / 2027"
+                                    class="w-full px-3 py-2.5 rounded-xl border-2 border-slate-300 font-bold text-slate-800">
+                            </div>
+                        </div>
+                        <div class="flex justify-end gap-2">
+                            <button onclick="saveTeacherInfo()" class="btn-anak bg-daun-cerah text-white font-judul font-bold px-5 py-2.5 rounded-xl">
+                                <i class="fa-solid fa-check mr-1"></i> Simpan Perubahan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===================================================================== -->
+    <!-- FOOTER RAMAH ANAK                                                     -->
+    <!-- ===================================================================== -->
+    <footer class="bg-daun-tua text-emerald-50 py-5 px-4 mt-10 text-center border-t-4 border-emerald-900 no-print">
+        <p class="font-judul text-lg">
+            <i class="fa-solid fa-leaf text-matahari-cerah mr-1"></i>
+            Media Evaluasi Pembelajaran Interaktif IPAS Kelas 4 SD • Tema: Mengenal Tumbuhan
+        </p>
+        <p class="text-sm text-emerald-200 mt-1">
+            Belajar Sains dengan Gembira, Cintai Alam dan Tumbuhan di Sekitar Kita!
+        </p>
+    </footer>
+
+    <!-- ===================================================================== -->
+    <!-- SCRIPT JAVASCRIPT MURNI (LOGIKA SPA, AUDIO, KUIS, & DRAG AND DROP)    -->
+    <!-- ===================================================================== -->
+    <script>
+        /* ===================================================================
+           1. MESIN EFEK SUARA SEDERHANA (WEB AUDIO API TANPA FILE EKSTERNAL)
+           =================================================================== */
+        let soundEnabled = true;
+        let audioCtx = null;
+
+        // Inisialisasi AudioContext saat interaksi pertama pengguna
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (AudioContextClass) {
+                    audioCtx = new AudioContextClass();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Mengubah status suara Hidup / Mati
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('icon-sound');
+            const label = document.getElementById('label-sound');
+            if (soundEnabled) {
+                icon.className = 'fa-solid fa-volume-high text-lg text-daun-tua';
+                label.textContent = 'Suara: Hidup';
+                playSound('click');
+            } else {
+                icon.className = 'fa-solid fa-volume-xmark text-lg text-rose-600';
+                label.textContent = 'Suara: Mati';
+            }
+        }
+
+        // Memainkan nada efek suara sesuai jenis peristiwa ('click', 'correct', 'wrong', 'win')
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                if (!audioCtx) return;
+
+                const now = audioCtx.currentTime;
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'click') {
+                    // Bunyi gelembung lembut saat menekan tombol
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(520, now);
+                    osc.frequency.exponentialRampToValueAtTime(760, now + 0.08);
+                    gain.gain.setValueAtTime(0.12, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+                    osc.start(now);
+                    osc.stop(now + 0.09);
+                } else if (type === 'correct') {
+                    // Nada ceria naik saat jawaban benar
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now);       // C5
+                    osc.frequency.setValueAtTime(659.25, now + 0.09); // E5
+                    osc.frequency.setValueAtTime(783.99, now + 0.18); // G5
+                    gain.gain.setValueAtTime(0.18, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } else if (type === 'wrong') {
+                    // Nada lembut saat jawaban kurang tepat (tidak mengagetkan anak)
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(320, now);
+                    osc.frequency.linearRampToValueAtTime(240, now + 0.22);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+                    osc.start(now);
+                    osc.stop(now + 0.25);
+                } else if (type === 'win') {
+                    // Fanfare kemenangan ceria
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((freq, idx) => {
+                        const o = audioCtx.createOscillator();
+                        const g = audioCtx.createGain();
+                        o.type = 'triangle';
+                        o.connect(g);
+                        g.connect(audioCtx.destination);
+                        o.frequency.setValueAtTime(freq, now + idx * 0.11);
+                        g.gain.setValueAtTime(0.18, now + idx * 0.11);
+                        g.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.11 + 0.35);
+                        o.start(now + idx * 0.11);
+                        o.stop(now + idx * 0.11 + 0.35);
+                    });
+                }
+            } catch (e) {
+                // Abaikan jika browser memblokir audio otomatis
+            }
+        }
+
+        /* ===================================================================
+           2. SISTEM NAVIGASI TAB SINGLE PAGE APPLICATION (TANPA RELOAD)
+           =================================================================== */
+        function switchTab(tabName) {
+            playSound('click');
+
+            // Sembunyikan semua panel tab
+            const panels = document.querySelectorAll('.tab-panel');
+            panels.forEach(panel => panel.classList.add('hidden'));
+
+            // Tampilkan panel yang dipilih
+            const activePanel = document.getElementById('tab-' + tabName);
+            if (activePanel) {
+                activePanel.classList.remove('hidden');
+            }
+
+            // Perbarui gaya tombol navigasi aktif vs tidak aktif
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => {
+                btn.classList.remove('bg-matahari-cerah', 'text-slate-900', 'border-white');
+                btn.classList.add('bg-white/90', 'text-daun-tua', 'border-transparent');
+            });
+
+            const activeBtn = document.getElementById('nav-' + tabName);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-white/90', 'text-daun-tua', 'border-transparent');
+                activeBtn.classList.add('bg-matahari-cerah', 'text-slate-900', 'border-white');
+            }
+
+            // Gulir lembut ke atas agar nyaman dibaca di HP/Tablet
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /* ===================================================================
+           3. DATA & INTERAKSI EKSPLORASI BAGIAN TUMBUHAN (TAB HOME)
+           =================================================================== */
+        const plantPartsData = {
+            akar: {
+                title: 'Akar (Penyerap Air & Penopang)',
+                icon: 'fa-code-branch',
+                iconBg: 'bg-amber-700',
+                cardBg: 'bg-amber-50 border-amber-500',
+                desc: 'Akar berada di dalam tanah. Tugas utamanya adalah <strong>menyerap air dan zat hara (mineral)</strong> dari tanah serta memperkokoh berdirinya tumbuhan agar tidak mudah roboh tertiup angin.',
+                fact: 'Ada dua jenis akar utama: <strong>Akar Tunggang</strong> (contoh: mangga, jeruk) dan <strong>Akar Serabut</strong> (contoh: padi, jagung, kelapa).'
+            },
+            batang: {
+                title: 'Batang (Jalan Raya Nutrisi)',
+                icon: 'fa-grip-lines-vertical',
+                iconBg: 'bg-green-700',
+                cardBg: 'bg-green-50 border-green-500',
+                desc: 'Batang menopang daun, bunga, dan buah agar tetap tegak. Batang juga bertugas <strong>menyalurkan air dan mineral dari akar ke daun</strong>, serta menyalurkan hasil makanan dari daun ke seluruh tubuh tumbuhan.',
+                fact: 'Beberapa tumbuhan menyimpan cadangan makanannya di batang, lho! Contohnya adalah tanaman <strong>tebu</strong> dan <strong>sagu</strong>.'
+            },
+            daun: {
+                title: 'Daun (Dapur Tumbuhan)',
+                icon: 'fa-leaf',
+                iconBg: 'bg-daun-cerah',
+                cardBg: 'bg-daun-muda/70 border-daun-cerah',
+                desc: 'Daun adalah tempat tumbuhan membuat makanannya sendiri melalui proses <strong>fotosintesis</strong>. Daun berwarna hijau karena mengandung zat hijau daun yang disebut <strong>klorofil</strong>.',
+                fact: 'Di permukaan daun terdapat mulut daun kecil bernama <strong>stomata</strong> yang berfungsi sebagai tempat keluar masuknya udara!'
+            },
+            bunga: {
+                title: 'Bunga (Alat Perkembangbiakan)',
+                icon: 'fa-spa',
+                iconBg: 'bg-rose-500',
+                cardBg: 'bg-rose-50 border-rose-400',
+                desc: 'Bunga memiliki warna indah dan aroma harum untuk menarik perhatian serangga seperti lebah dan kupu-kupu. Bunga adalah <strong>alat perkembangbiakan tumbuhan</strong> karena memiliki benang sari dan putik.',
+                fact: 'Setelah terjadi penyerbukan pada bunga, bunga akan tumbuh berkembang menjadi <strong>buah dan biji</strong>!'
+            },
+            buah: {
+                title: 'Buah (Pelindung Biji)',
+                icon: 'fa-apple-whole',
+                iconBg: 'bg-orange-500',
+                cardBg: 'bg-orange-50 border-orange-400',
+                desc: 'Buah berfungsi untuk <strong>melindungi biji</strong> yang ada di dalamnya dan menyimpan cadangan makanan. Daging buah yang lezat sering dimakan hewan atau manusia sehingga bijinya tersebar dan tumbuh menjadi tanaman baru.',
+                fact: 'Biji di dalam buah adalah calon tumbuhan baru! Jika ditanam di tanah yang subur, biji akan berkecambah.'
+            },
+            matahari: {
+                title: 'Cahaya Matahari (Sumber Energi)',
+                icon: 'fa-sun',
+                iconBg: 'bg-yellow-500',
+                cardBg: 'bg-matahari-muda/80 border-matahari-cerah',
+                desc: 'Meski bukan bagian tubuh tumbuhan, cahaya matahari adalah <strong>sumber energi utama</strong> yang ditangkap oleh klorofil di daun agar proses fotosintesis dapat berjalan.',
+                fact: 'Tanpa cahaya matahari, tumbuhan tidak bisa memasak makanannya dan daunnya akan menguning lalu layu.'
+            }
+        };
+
+        function selectPlantPart(partKey) {
+            playSound('click');
+            const info = plantPartsData[partKey];
+            if (!info) return;
+
+            // Hapus sorotan dari semua bagian SVG
+            document.querySelectorAll('.plant-part').forEach(el => {
+                el.classList.remove('plant-part-selected', 'wiggle-active');
+            });
+
+            // Beri efek sorotan & goyangan pada bagian SVG yang diklik
+            const targetSvg = document.getElementById('svg-part-' + partKey);
+            if (targetSvg) {
+                targetSvg.classList.add('plant-part-selected');
+                // Memicu ulang animasi wiggle
+                void targetSvg.offsetWidth;
+                targetSvg.classList.add('wiggle-active');
+            }
+
+            // Perbarui isi kartu informasi di sebelah kanan
+            const card = document.getElementById('plant-info-card');
+            card.className = `rounded-3xl p-6 sm:p-8 border-4 shadow-inner transition-all ${info.cardBg}`;
+
+            const iconBox = document.getElementById('plant-info-icon');
+            iconBox.className = `w-16 h-16 rounded-2xl text-white flex items-center justify-center text-3xl shadow-md ${info.iconBg}`;
+            iconBox.innerHTML = `<i class="fa-solid ${info.icon}"></i>`;
+
+            document.getElementById('plant-info-title').textContent = info.title;
+            document.getElementById('plant-info-desc').innerHTML = info.desc;
+            document.getElementById('plant-info-fact').innerHTML = info.fact;
+        }
+
+        /* ===================================================================
+           4. LOGIKA CHECKLIST KESIAPAN BELAJAR (TAB TUJUAN PEMBELAJARAN)
+           =================================================================== */
+        function updateChecklist() {
+            playSound('click');
+            const checkboxes = document.querySelectorAll('.readiness-cb');
+            let checkedCount = 0;
+            checkboxes.forEach(cb => {
+                if (cb.checked) checkedCount++;
+            });
+
+            document.getElementById('checklist-status').textContent = `${checkedCount} / ${checkboxes.length} Siap`;
+            const banner = document.getElementById('checklist-banner');
+            if (checkedCount === checkboxes.length) {
+                banner.classList.remove('hidden');
+                playSound('correct');
+            } else {
+                banner.classList.add('hidden');
+            }
+        }
+
+        /* ===================================================================
+           5. LOGIKA KUIS INTERAKTIF (10 SOAL + PEMBAHASAN + SERTIFIKAT)
+           =================================================================== */
+        const quizQuestions = [
+            {
+                icon: 'fa-code-branch',
+                question: 'Bagian tumbuhan yang umumnya berada di dalam tanah dan berfungsi menyerap air serta zat hara adalah ....',
+                options: ['Daun', 'Akar', 'Bunga', 'Batang'],
+                correctIndex: 1,
+                explanation: 'Tepat sekali! Akar tumbuh di dalam tanah untuk menyerap air dan zat hara (mineral) sekaligus memperkokoh berdirinya tumbuhan.'
+            },
+            {
+                icon: 'fa-tree',
+                question: 'Manakah kelompok tumbuhan di bawah ini yang memiliki jenis akar tunggang?',
+                options: ['Padi dan jagung', 'Rumput dan kelapa', 'Pohon mangga dan pohon jeruk', 'Bawang merah dan tebu'],
+                correctIndex: 2,
+                explanation: 'Benar! Pohon mangga dan pohon jeruk memiliki satu akar utama yang besar dan kuat (akar tunggang), sedangkan padi dan jagung berakar serabut.'
+            },
+            {
+                icon: 'fa-grip-lines-vertical',
+                question: 'Apa fungsi utama batang pada tumbuhan?',
+                options: [
+                    'Menyalurkan air dari akar ke daun dan menopang tubuh tumbuhan',
+                    'Menyerap cahaya matahari untuk fotosintesis',
+                    'Menarik perhatian serangga untuk penyerbukan',
+                    'Melindungi biji di dalam daging buah'
+                ],
+                correctIndex: 0,
+                explanation: 'Hebat! Batang bekerja seperti jalan raya yang mengangkut air dari akar ke daun serta menyalurkan makanan ke seluruh bagian tumbuhan.'
+            },
+            {
+                icon: 'fa-leaf',
+                question: 'Proses tumbuhan memasak atau membuat makanannya sendiri dengan bantuan cahaya matahari disebut ....',
+                options: ['Penyerbukan', 'Fotosintesis', 'Penguapan', 'Perkembangbiakan'],
+                correctIndex: 1,
+                explanation: 'Betul! Fotosintesis adalah proses pembuatan makanan pada tumbuhan hijau yang terjadi terutama di bagian daun.'
+            },
+            {
+                icon: 'fa-droplet',
+                question: 'Zat hijau daun yang berperan menangkap energi cahaya matahari saat fotosintesis adalah ....',
+                options: ['Stomata', 'Oksigen', 'Klorofil', 'Karbohidrat'],
+                correctIndex: 2,
+                explanation: 'Cerdas! Klorofil adalah zat warna hijau pada daun yang bertugas menangkap energi cahaya matahari.'
+            },
+            {
+                icon: 'fa-sun',
+                question: 'Bahan-bahan apa saja yang dibutuhkan tumbuhan untuk melakukan proses fotosintesis?',
+                options: [
+                    'Oksigen, gula, dan tanah liat',
+                    'Air, karbon dioksida, dan cahaya matahari',
+                    'Biji, bunga, dan udara malam',
+                    'Pupuk, oksigen, dan angin'
+                ],
+                correctIndex: 1,
+                explanation: 'Tepat! Tumbuhan membutuhkan air (dari akar), gas karbon dioksida (dari udara), dan energi cahaya matahari untuk berfotosintesis.'
+            },
+            {
+                icon: 'fa-lungs',
+                question: 'Selain menghasilkan karbohidrat (makanan), proses fotosintesis menghasilkan gas yang sangat dibutuhkan manusia dan hewan untuk bernapas, yaitu ....',
+                options: ['Karbon dioksida', 'Nitrogen', 'Oksigen', 'Uap air'],
+                correctIndex: 2,
+                explanation: 'Luar biasa! Tumbuhan mengeluarkan gas oksigen saat fotosintesis sehingga udara di sekitar pepohonan terasa segar dan sehat.'
+            },
+            {
+                icon: 'fa-spa',
+                question: 'Bagian tumbuhan yang memiliki putik dan benang sari serta berfungsi sebagai alat perkembangbiakan adalah ....',
+                options: ['Bunga', 'Akar', 'Batang', 'Daun'],
+                correctIndex: 0,
+                explanation: 'Benar sekali! Bunga adalah alat perkembangbiakan tumbuhan. Penyerbukan pada bunga akan menghasilkan buah dan biji.'
+            },
+            {
+                icon: 'fa-apple-whole',
+                question: 'Saat kita membelah buah mangga atau alpukat, di dalamnya terdapat biji. Fungsi buah bagi biji tersebut adalah ....',
+                options: [
+                    'Membuat biji menjadi kering',
+                    'Melindungi biji dan menyimpan cadangan makanan',
+                    'Menyerap air hujan dari udara',
+                    'Menggantikan tugas akar'
+                ],
+                correctIndex: 1,
+                explanation: 'Tepat! Buah melindungi biji yang merupakan calon tumbuhan baru sekaligus menyimpan cadangan makanan.'
+            },
+            {
+                icon: 'fa-wind',
+                question: 'Lubang-lubang kecil di permukaan daun yang menjadi tempat keluar masuknya gas karbon dioksida dan oksigen disebut ....',
+                options: ['Klorofil', 'Putik', 'Stomata', 'Akar serabut'],
+                correctIndex: 2,
+                explanation: 'Mantap! Stomata (mulut daun) adalah pori-pori kecil di daun tempat keluar masuknya udara saat tumbuhan bernapas dan berfotosintesis.'
+            }
+        ];
+
+        let currentStudentName = '';
+        let currentStudentClass = '';
+        let currentQuestionIdx = 0;
+        let quizScore = 0;
+        let questionAnswered = false;
+
+        // Memulai kuis setelah validasi nama siswa
+        function startQuiz() {
+            const nameInput = document.getElementById('input-nama-siswa').value.trim();
+            const classInput = document.getElementById('input-kelas-siswa').value.trim() || '4 (Empat)';
+            const errorBox = document.getElementById('quiz-form-error');
+
+            if (!nameInput) {
+                errorBox.classList.remove('hidden');
+                playSound('wrong');
+                document.getElementById('input-nama-siswa').focus();
+                return;
+            }
+
+            errorBox.classList.add('hidden');
+            playSound('click');
+
+            currentStudentName = nameInput;
+            currentStudentClass = classInput;
+            currentQuestionIdx = 0;
+            quizScore = 0;
+
+            document.getElementById('quiz-start-screen').classList.add('hidden');
+            document.getElementById('quiz-result-screen').classList.add('hidden');
+            document.getElementById('quiz-play-screen').classList.remove('hidden');
+
+            renderQuestion();
+        }
+
+        // Menampilkan soal ke layar
+        function renderQuestion() {
+            questionAnswered = false;
+            const qData = quizQuestions[currentQuestionIdx];
+            const total = quizQuestions.length;
+
+            // Update progress & skor
+            document.getElementById('quiz-progress-text').textContent = `Soal ${currentQuestionIdx + 1} dari ${total}`;
+            document.getElementById('quiz-live-score').innerHTML = `<i class="fa-solid fa-star text-amber-500 mr-1"></i> Skor: ${quizScore}`;
+            document.getElementById('quiz-progress-bar').style.width = `${((currentQuestionIdx + 1) / total) * 100}%`;
+
+            // Tampilkan ikon & teks pertanyaan
+            document.getElementById('quiz-question-icon').innerHTML = `<i class="fa-solid ${qData.icon}"></i>`;
+            document.getElementById('quiz-question-text').textContent = qData.question;
+
+            // Sembunyikan kotak pembahasan & tombol lanjut
+            document.getElementById('quiz-feedback-box').classList.add('hidden');
+            const nextBtn = document.getElementById('btn-next-question');
+            nextBtn.classList.add('hidden');
+            nextBtn.classList.remove('flex');
+
+            // Render 4 tombol pilihan A, B, C, D
+            const optionsContainer = document.getElementById('quiz-options-container');
+            optionsContainer.innerHTML = '';
+            const letters = ['A', 'B', 'C', 'D'];
+
+            qData.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-opt-btn btn-anak w-full text-left p-4 rounded-2xl border-2 border-slate-300 bg-white hover:bg-daun-muda/60 hover:border-daun-cerah font-bold text-lg text-slate-800 flex items-center gap-3 transition';
+                btn.innerHTML = `
+                    <span class="w-10 h-10 rounded-xl bg-slate-100 border border-slate-300 flex-shrink-0 flex items-center justify-center font-judul text-daun-tua">
+                        ${letters[idx]}
+                    </span>
+                    <span>${optText}</span>
+                `;
+                btn.onclick = () => checkQuizAnswer(idx, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        // Memeriksa jawaban yang dipilih siswa
+        function checkQuizAnswer(selectedIdx, selectedBtn) {
+            if (questionAnswered) return;
+            questionAnswered = true;
+
+            const qData = quizQuestions[currentQuestionIdx];
+            const isCorrect = selectedIdx === qData.correctIndex;
+            const allButtons = document.querySelectorAll('.quiz-opt-btn');
+
+            // Nonaktifkan semua tombol opsi & tandai jawaban yang benar
+            allButtons.forEach((btn, idx) => {
+                btn.disabled = true;
+                btn.classList.remove('hover:bg-daun-muda/60', 'hover:border-daun-cerah');
+                if (idx === qData.correctIndex) {
+                    btn.classList.remove('border-slate-300', 'bg-white');
+                    btn.classList.add('bg-emerald-100', 'border-emerald-600', 'text-emerald-950');
+                }
+            });
+
+            const feedbackBox = document.getElementById('quiz-feedback-box');
+            const feedbackIcon = document.getElementById('quiz-feedback-icon');
+            const feedbackTitle = document.getElementById('quiz-feedback-title');
+            const feedbackExp = document.getElementById('quiz-feedback-explanation');
+
+            feedbackBox.classList.remove('hidden', 'bg-emerald-50', 'border-emerald-400', 'text-emerald-900', 'bg-rose-50', 'border-rose-400', 'text-rose-900');
+
+            if (isCorrect) {
+                quizScore += 10;
+                playSound('correct');
+                document.getElementById('quiz-live-score').innerHTML = `<i class="fa-solid fa-star text-amber-500 mr-1"></i> Skor: ${quizScore}`;
+
+                feedbackBox.classList.add('bg-emerald-50', 'border-emerald-400', 'text-emerald-900');
+                feedbackIcon.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600"></i>';
+                feedbackTitle.textContent = 'Yeay! Jawabanmu Benar (+10 Poin)';
+            } else {
+                playSound('wrong');
+                selectedBtn.classList.remove('border-slate-300', 'bg-white');
+                selectedBtn.classList.add('bg-rose-100', 'border-rose-500', 'text-rose-950');
+
+                feedbackBox.classList.add('bg-rose-50', 'border-rose-400', 'text-rose-900');
+                feedbackIcon.innerHTML = '<i class="fa-solid fa-circle-xmark text-rose-600"></i>';
+                feedbackTitle.textContent = 'Ups, Kurang Tepat! Yuk Simak Pembahasannya:';
+            }
+
+            feedbackExp.textContent = qData.explanation;
+
+            // Tampilkan tombol soal berikutnya / lihat hasil
+            const nextBtn = document.getElementById('btn-next-question');
+            const nextLabel = document.getElementById('btn-next-label');
+            nextLabel.textContent = (currentQuestionIdx === quizQuestions.length - 1)
+                ? 'Lihat Skor & Sertifikat'
+                : 'Soal Berikutnya';
+            nextBtn.classList.remove('hidden');
+            nextBtn.classList.add('flex');
+        }
+
+        // Lanjut ke pertanyaan berikutnya atau tampilkan hasil akhir
+        function nextQuestion() {
+            playSound('click');
+            currentQuestionIdx++;
+            if (currentQuestionIdx < quizQuestions.length) {
+                renderQuestion();
+            } else {
+                showQuizResult();
+            }
+        }
+
+        // Menampilkan skor akhir & sertifikat hasil belajar
+        function showQuizResult() {
+            playSound('win');
+            document.getElementById('quiz-play-screen').classList.add('hidden');
+            document.getElementById('quiz-result-screen').classList.remove('hidden');
+
+            document.getElementById('cert-student-name').textContent = currentStudentName;
+            document.getElementById('cert-student-class').textContent = `Kelas: ${currentStudentClass}`;
+            document.getElementById('cert-score').textContent = quizScore;
+
+            // Tentukan bintang & predikat nilai
+            let stars = '★★☆☆☆';
+            let predicate = 'Ayo Terus Berlatih! Kamu Pasti Bisa';
+            if (quizScore >= 90) {
+                stars = '★★★★★';
+                predicate = 'Luar Biasa! Sang Ahli Tumbuhan';
+            } else if (quizScore >= 75) {
+                stars = '★★★★☆';
+                predicate = 'Hebat Sekali! Penjelajah Alam Cerdas';
+            } else if (quizScore >= 60) {
+                stars = '★★★☆☆';
+                predicate = 'Bagus! Terus Semangat Belajar';
+            }
+
+            document.getElementById('cert-stars').textContent = stars;
+            document.getElementById('cert-predicate').textContent = predicate;
+
+            // Tanggal hari ini dalam format Indonesia
+            const optionsDate = { day: 'numeric', month: 'long', year: 'numeric' };
+            const todayStr = new Date().toLocaleDateString('id-ID', optionsDate);
+            document.getElementById('cert-date').textContent = `Tanggal: ${todayStr}`;
+
+            // Sinkronkan nama guru & sekolah dari tab Tentang
+            syncTeacherToCertificate();
+        }
+
+        function resetQuiz() {
+            playSound('click');
+            document.getElementById('quiz-result-screen').classList.add('hidden');
+            document.getElementById('quiz-play-screen').classList.add('hidden');
+            document.getElementById('quiz-start-screen').classList.remove('hidden');
+        }
+
+        /* ===================================================================
+           6. LOGIKA PERMAINAN DRAG AND DROP (DUAL MODE: DRAG & TAP-TO-MATCH)
+           =================================================================== */
+        const dndItemsData = [
+            {
+                id: 'akar',
+                name: 'Akar',
+                icon: 'fa-code-branch',
+                color: 'bg-amber-100 border-amber-500 text-amber-900',
+                functionText: 'Menyerap air dan zat hara dari dalam tanah serta memperkokoh berdirinya tumbuhan.'
+            },
+            {
+                id: 'batang',
+                name: 'Batang',
+                icon: 'fa-grip-lines-vertical',
+                color: 'bg-green-100 border-green-600 text-green-900',
+                functionText: 'Menopang tubuh tumbuhan dan menyalurkan air dari akar menuju ke daun.'
+            },
+            {
+                id: 'daun',
+                name: 'Daun',
+                icon: 'fa-leaf',
+                color: 'bg-emerald-100 border-emerald-500 text-emerald-900',
+                functionText: 'Tempat memasak makanan (fotosintesis) karena mengandung zat hijau daun (klorofil).'
+            },
+            {
+                id: 'bunga',
+                name: 'Bunga',
+                icon: 'fa-spa',
+                color: 'bg-rose-100 border-rose-500 text-rose-900',
+                functionText: 'Alat perkembangbiakan tumbuhan yang memiliki putik dan benang sari.'
+            },
+            {
+                id: 'buah',
+                name: 'Buah',
+                icon: 'fa-apple-whole',
+                color: 'bg-orange-100 border-orange-500 text-orange-900',
+                functionText: 'Melindungi biji calon tumbuhan baru dan menyimpan cadangan makanan.'
+            },
+            {
+                id: 'matahari',
+                name: 'Matahari',
+                icon: 'fa-sun',
+                color: 'bg-yellow-100 border-yellow-500 text-yellow-900',
+                functionText: 'Sumber energi cahaya utama yang membantu daun melakukan fotosintesis.'
+            }
+        ];
+
+        let dndMatchedCount = 0;
+        let selectedDndId = null; // Untuk mode klik/sentuh (tap-to-match) di tablet & smartphone
+
+        // Fungsi mengacak urutan array (Fisher-Yates Shuffle)
+        function shuffleArray(arr) {
+            const copy = [...arr];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function initDragAndDrop() {
+            dndMatchedCount = 0;
+            selectedDndId = null;
+            document.getElementById('dnd-score-badge').textContent = 'Terpasang: 0 / 6';
+            document.getElementById('dnd-win-banner').classList.add('hidden');
+
+            const sourceContainer = document.getElementById('dnd-source-container');
+            const targetContainer = document.getElementById('dnd-target-container');
+            sourceContainer.innerHTML = '';
+            targetContainer.innerHTML = '';
+
+            // Acak kartu sumber dan kotak target secara terpisah
+            const shuffledSources = shuffleArray(dndItemsData);
+            const shuffledTargets = shuffleArray(dndItemsData);
+
+            // Render kartu bagian tumbuhan
+            shuffledSources.forEach(item => {
+                const card = document.createElement('div');
+                card.id = `dnd-card-${item.id}`;
+                card.draggable = true;
+                card.dataset.id = item.id;
+                card.className = `dnd-card btn-anak p-3.5 rounded-2xl border-2 font-judul font-bold text-lg text-center flex flex-col items-center justify-center gap-1.5 ${item.color}`;
+                card.innerHTML = `
+                    <i class="fa-solid ${item.icon} text-2xl"></i>
+                    <span>${item.name}</span>
+                `;
+
+                // Event Drag Desktop
+                card.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', item.id);
+                    selectDndCard(item.id);
+                });
+
+                // Event Klik/Sentuh (Tap-to-Match untuk HP & Tablet)
+                card.addEventListener('click', () => {
+                    playSound('click');
+                    selectDndCard(item.id);
+                });
+
+                sourceContainer.appendChild(card);
+            });
+
+            // Render kotak fungsi target
+            shuffledTargets.forEach(item => {
+                const zone = document.createElement('div');
+                zone.id = `dnd-zone-${item.id}`;
+                zone.dataset.targetId = item.id;
+                zone.className = 'dnd-dropzone bg-slate-50 border-3 border-dashed border-slate-300 rounded-2xl p-4 flex flex-col sm:flex-row items-center gap-4 min-h-[104px] cursor-pointer hover:border-daun-cerah';
+                zone.innerHTML = `
+                    <div class="zone-slot w-full sm:w-36 h-16 rounded-xl bg-white border-2 border-slate-200 flex-shrink-0 flex items-center justify-center text-slate-400 font-judul font-semibold text-base">
+                        Letakkan di sini
+                    </div>
+                    <p class="text-slate-700 font-semibold text-base sm:text-lg leading-snug text-center sm:text-left">
+                        ${item.functionText}
+                    </p>
+                `;
+
+                // Event Drop Desktop
+                zone.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    if (!zone.dataset.matched) {
+                        zone.classList.add('drag-over');
+                    }
+                });
+
+                zone.addEventListener('dragleave', () => {
+                    zone.classList.remove('drag-over');
+                });
+
+                zone.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    zone.classList.remove('drag-over');
+                    const draggedId = e.dataTransfer.getData('text/plain') || selectedDndId;
+                    if (draggedId) {
+                        attemptDndMatch(draggedId, item.id);
+                    }
+                });
+
+                // Event Klik/Sentuh pada Kotak Fungsi (Tap-to-Match)
+                zone.addEventListener('click', () => {
+                    if (selectedDndId && !zone.dataset.matched) {
+                        attemptDndMatch(selectedDndId, item.id);
+                    }
+                });
+
+                targetContainer.appendChild(zone);
+            });
+        }
+
+        // Menyorot kartu yang sedang dipilih
+        function selectDndCard(id) {
+            document.querySelectorAll('.dnd-card').forEach(c => {
+                c.classList.remove('ring-4', 'ring-sky-500', 'scale-105');
+            });
+            selectedDndId = id;
+            const activeCard = document.getElementById(`dnd-card-${id}`);
+            if (activeCard) {
+                activeCard.classList.add('ring-4', 'ring-sky-500', 'scale-105');
+            }
+        }
+
+        // Memeriksa kecocokan pasangan Drag and Drop
+        function attemptDndMatch(sourceId, targetId) {
+            const zone = document.getElementById(`dnd-zone-${targetId}`);
+            if (!zone || zone.dataset.matched === 'true') return;
+
+            if (sourceId === targetId) {
+                // Cocok!
+                playSound('correct');
+                zone.dataset.matched = 'true';
+                zone.classList.remove('border-dashed', 'border-slate-300', 'bg-slate-50', 'dnd-hint-pulse');
+                zone.classList.add('border-solid', 'border-daun-cerah', 'bg-daun-muda/70');
+
+                const itemData = dndItemsData.find(d => d.id === sourceId);
+                const slot = zone.querySelector('.zone-slot');
+                slot.className = `zone-slot w-full sm:w-36 py-2 px-3 rounded-xl border-2 font-judul font-bold text-base flex items-center justify-center gap-2 shadow-sm ${itemData.color}`;
+                slot.innerHTML = `<i class="fa-solid ${itemData.icon}"></i> <span>${itemData.name}</span> <i class="fa-solid fa-check text-emerald-700"></i>`;
+
+                // Sembunyikan kartu sumber yang sudah terpasang
+                const sourceCard = document.getElementById(`dnd-card-${sourceId}`);
+                if (sourceCard) {
+                    sourceCard.classList.add('opacity-30', 'pointer-events-none', 'scale-95');
+                    sourceCard.classList.remove('ring-4', 'ring-sky-500', 'dnd-hint-pulse');
+                    sourceCard.draggable = false;
+                }
+
+                selectedDndId = null;
+                dndMatchedCount++;
+                document.getElementById('dnd-score-badge').textContent = `Terpasang: ${dndMatchedCount} / 6`;
+
+                // Cek apakah semua 6 kartu sudah terpasang
+                if (dndMatchedCount === dndItemsData.length) {
+                    playSound('win');
+                    document.getElementById('dnd-win-banner').classList.remove('hidden');
+                }
+            } else {
+                // Belum cocok: beri getaran lembut pada kotak tujuan
+                playSound('wrong');
+                zone.classList.add('bg-rose-100', 'border-rose-400', 'wiggle-active');
+                setTimeout(() => {
+                    zone.classList.remove('bg-rose-100', 'border-rose-400', 'wiggle-active');
+                }, 550);
+            }
+        }
+
+        // Fitur Petunjuk: Menyorot 1 kartu yang belum cocok beserta kotak tujuannya
+        function giveDndHint() {
+            playSound('click');
+            const unmatchedItem = dndItemsData.find(item => {
+                const z = document.getElementById(`dnd-zone-${item.id}`);
+                return z && z.dataset.matched !== 'true';
+            });
+
+            if (!unmatchedItem) return;
+
+            const card = document.getElementById(`dnd-card-${unmatchedItem.id}`);
+            const zone = document.getElementById(`dnd-zone-${unmatchedItem.id}`);
+
+            selectDndCard(unmatchedItem.id);
+            if (card) card.classList.add('dnd-hint-pulse');
+            if (zone) zone.classList.add('dnd-hint-pulse');
+
+            setTimeout(() => {
+                if (card) card.classList.remove('dnd-hint-pulse');
+                if (zone) zone.classList.remove('dnd-hint-pulse');
+            }, 2600);
+        }
+
+        /* ===================================================================
+           7. PENGATURAN IDENTITAS GURU & SEKOLAH (TAB TENTANG & SERTIFIKAT)
+           =================================================================== */
+        function toggleEditTeacher() {
+            playSound('click');
+            const form = document.getElementById('teacher-edit-form');
+            form.classList.toggle('hidden');
+        }
+
+        function saveTeacherInfo() {
+            playSound('correct');
+            const teacherName = document.getElementById('input-teacher-name').value.trim() || 'Bapak/Ibu Guru Kelas 4';
+            const schoolName = document.getElementById('input-school-name').value.trim() || 'SD Negeri Nusantara';
+            const academicYear = document.getElementById('input-academic-year').value.trim() || '2026 / 2027';
+
+            document.getElementById('display-teacher-name').textContent = teacherName;
+            document.getElementById('display-school-name').textContent = schoolName;
+            document.getElementById('display-academic-year').textContent = academicYear;
+
+            // Simpan ke localStorage jika didukung browser
+            try {
+                localStorage.setItem('ipas4_teacher_name', teacherName);
+                localStorage.setItem('ipas4_school_name', schoolName);
+                localStorage.setItem('ipas4_academic_year', academicYear);
+            } catch (e) {}
+
+            syncTeacherToCertificate();
+            document.getElementById('teacher-edit-form').classList.add('hidden');
+        }
+
+        function syncTeacherToCertificate() {
+            const teacherName = document.getElementById('display-teacher-name').textContent;
+            const schoolName = document.getElementById('display-school-name').textContent;
+            document.getElementById('cert-teacher-name').textContent = teacherName;
+            document.getElementById('cert-school-name').textContent = schoolName;
+        }
+
+        function loadSavedTeacherInfo() {
+            try {
+                const savedTeacher = localStorage.getItem('ipas4_teacher_name');
+                const savedSchool = localStorage.getItem('ipas4_school_name');
+                const savedYear = localStorage.getItem('ipas4_academic_year');
+
+                if (savedTeacher) {
+                    document.getElementById('display-teacher-name').textContent = savedTeacher;
+                    document.getElementById('input-teacher-name').value = savedTeacher;
+                }
+                if (savedSchool) {
+                    document.getElementById('display-school-name').textContent = savedSchool;
+                    document.getElementById('input-school-name').value = savedSchool;
+                }
+                if (savedYear) {
+                    document.getElementById('display-academic-year').textContent = savedYear;
+                    document.getElementById('input-academic-year').value = savedYear;
+                }
+                syncTeacherToCertificate();
+            } catch (e) {}
+        }
+
+        /* ===================================================================
+           8. INISIALISASI SAAT HALAMAN SELESAI DIMUAT
+           =================================================================== */
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSavedTeacherInfo();
+            initDragAndDrop();
+            // Sorot daun secara default pada ilustrasi tumbuhan di Home
+            const defaultLeaf = document.getElementById('svg-part-daun');
+            if (defaultLeaf) defaultLeaf.classList.add('plant-part-selected');
+        });
+    </script>
+</body>
+</html>
